@@ -12,9 +12,8 @@ import CoreData
 class AppDelegate: UIResponder, UIApplicationDelegate {
 
 
-
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
-        // Override point for customization after application launch.
+
         return true
     }
 
@@ -61,8 +60,23 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         return container
     }()
 
-    // MARK: - Core Data Saving support
+    // MARK: - Core Data Saving, Creating, Deleting support
 
+    func createTask(name: String) -> Task {
+        let context = persistentContainer.viewContext
+        let task = Task(context: context)
+        task.id = UUID()
+        task.lastUpdated = Date()
+        task.title = name
+        saveContext()
+        return task
+    }
+    
+    func deleteTask(_ task: Task) {
+        let context = persistentContainer.viewContext
+        context.delete(task)
+        saveContext()
+    }
     func saveContext () {
         let context = persistentContainer.viewContext
         if context.hasChanges {
