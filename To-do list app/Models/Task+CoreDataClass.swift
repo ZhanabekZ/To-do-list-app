@@ -11,9 +11,13 @@ import CoreData
 
 let currentDate = Date()
 let calendar = Calendar.current
+let dateFormatter = DateFormatter()
 
 func isDateToday(_ date: Date) -> Bool {
     return calendar.isDateInToday(date)
+}
+func isDateThisYear(_ date: Date) -> Bool {
+    return calendar.isDate(date, equalTo: Date(), toGranularity: .year)
 }
 @objc(Task)
 public class Task: NSManagedObject {
@@ -23,9 +27,14 @@ public class Task: NSManagedObject {
     
     var timeUpdated: String {
         if isDateToday(lastUpdated!) {
-            return lastUpdated!.formatted(date: .omitted, time: .shortened)
+            dateFormatter.dateFormat = "HH:mm"
+            return dateFormatter.string(from: lastUpdated!)
+        } else if isDateThisYear(lastUpdated!){
+            dateFormatter.dateFormat = "MMMM dd, HH:mm"
+            return dateFormatter.string(from: lastUpdated!).capitalized
         } else {
-            return lastUpdated!.formatted(date: .abbreviated, time: .shortened)
+            dateFormatter.dateFormat = "YYYY MMMM dd"
+            return dateFormatter.string(from: lastUpdated!)
         }
     }
 }
